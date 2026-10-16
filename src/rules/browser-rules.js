@@ -333,6 +333,18 @@
   function overlapsMedia(el, rect) {
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
+    // Binnen het zichtbare scherm: kijk wat er écht onder de tekst ligt (bijv. een doorzichtige
+    // header boven een grote foto, waar de foto niet in dezelfde HTML-tak zit).
+    if (cx >= 0 && cy >= 0 && cx < innerWidth && cy < innerHeight) {
+      const stack = document.elementsFromPoint(cx, cy);
+      for (const under of stack) {
+        if (under === el || el.contains(under) || under.contains(el)) continue;
+        const tag = under.tagName.toLowerCase();
+        if (['img', 'video', 'canvas', 'picture'].includes(tag)) return true;
+        const bgImg = getComputedStyle(under).backgroundImage;
+        if (bgImg && bgImg !== 'none') return true;
+      }
+    }
     let anc = el.parentElement;
     for (let depth = 0; anc && depth < 6; depth++, anc = anc.parentElement) {
       const media = anc.querySelectorAll('img, video, canvas, picture');

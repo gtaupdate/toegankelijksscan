@@ -159,3 +159,10 @@ test('ontdubbelen: dezelfde headerfout op meerdere pagina\'s telt één keer', a
     server.close();
   }
 });
+
+test('contrast: doorzichtige header boven een foto is handmatig, gewone tekst blijft een fout', async () => {
+  const scan = await scanSite(FIX('transparante-header.html'), { maxPages: 1, screenshot: false });
+  const r = scan.pages[0].results['color-contrast'];
+  assert.deepEqual(r.violations.map((v) => v.selector), ['#echt-fout']);
+  assert.ok(r.incomplete.some((i) => i.selector === '#menu-shop'));
+});
