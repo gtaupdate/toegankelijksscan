@@ -1,5 +1,6 @@
 # Elke wijziging in dit bestand start een scan van de adressen hieronder.
 # Eén adres per regel. Regels die met # beginnen worden overgeslagen.
+# Verzoek 2026-10-16 15:14 – eerste scan met webhook
 unmatched-matcha.com
 nolson.nl
 hang-eleven.com
