@@ -1,0 +1,5 @@
+# Elke wijziging in dit bestand start een scan van de adressen hieronder.
+# Eén adres per regel. Regels die met # beginnen worden overgeslagen.
+unmatched-matcha.com
+nolson.nl
+hang-eleven.com

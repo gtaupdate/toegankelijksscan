@@ -1,0 +1,49 @@
+# Bewaking: draait de tests en scant de vaste controlesites uit sites.txt.
+# Elke maandag automatisch, na elke wijziging in de code, en handmatig via "Run workflow".
+# Faalt een test of laadt een site niet, dan krijg je van GitHub een e-mail.
+name: Tests en controlescans
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+
+  controlescans:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Controlesites scannen
+        env:
+          RESULT_WEBHOOK: ${{ secrets.RESULT_WEBHOOK }}
+        run: node bin/run-and-notify.js --file sites.txt --pages 5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: controlescans
+          path: out/
+          retention-days: 30

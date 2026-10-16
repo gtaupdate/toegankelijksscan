@@ -1,0 +1,58 @@
+# Scans op aanvraag. Twee manieren om te starten:
+#  1. Handmatig: Actions → "Scan een website" → Run workflow → adres invullen.
+#  2. Via het bestand scan-verzoeken.txt: elke wijziging daarin start een scan van de adressen erin.
+#     Zo kan ook Claude een scan aanvragen, door een regel aan dat bestand toe te voegen.
+# Resultaat: onder de run bij "Artifacts" (rapport.html, verklaring.html, scan.json),
+# en als samenvatting naar de webhook in secret RESULT_WEBHOOK (Make.com).
+name: Scan een website
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Adres van de website (bijv. www.jouwwinkel.nl)"
+        required: true
+      pages:
+        description: "Aantal pagina's"
+        required: false
+        default: "5"
+  push:
+    paths:
+      - scan-verzoeken.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scans
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Scannen
+        # Invoer via omgevingsvariabelen, niet direct in het commando (voorkomt command injection).
+        env:
+          SCAN_URL: ${{ inputs.url }}
+          SCAN_PAGES: ${{ inputs.pages || '5' }}
+          RESULT_WEBHOOK: ${{ secrets.RESULT_WEBHOOK }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            node bin/run-and-notify.js "$SCAN_URL" --pages "$SCAN_PAGES"
+          else
+            node bin/run-and-notify.js --file scan-verzoeken.txt --pages "$SCAN_PAGES"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rapporten
+          path: out/
+          retention-days: 14

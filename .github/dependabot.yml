@@ -1,0 +1,12 @@
+# Stelt elke week updates voor van Playwright en de GitHub Actions.
+# Elk voorstel draait automatisch alle tests; jij keurt goed met één klik.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

@@ -1,0 +1,15 @@
+# Render Blueprint: in Render "New → Blueprint" kiezen en deze repository selecteren.
+# Kies bij het aanmaken een plan met minstens 1 GB geheugen: Chromium heeft dat nodig.
+services:
+  - type: web
+    name: toegankelijkscan
+    runtime: docker
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: API_KEY
+        generateValue: true
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SCAN_CONCURRENCY
+        value: "1"

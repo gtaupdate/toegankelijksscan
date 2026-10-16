@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <style>
+    body { font-family: sans-serif; background: #fff; color: #222; }
+    .licht { color: #aaaaaa; font-size: 14px; }            /* 2,32:1 -> fout */
+    .groot { color: #949494; font-size: 24px; }            /* 3,03:1, grote tekst -> goed */
+    .grens { color: #767676; font-size: 14px; }            /* 4,54:1 -> goed */
+    .hero { background-image: linear-gradient(#000, #333); color: #fff; } /* handmatig */
+    .verborgen { display: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/winkelwagen" id="cart-icon"><svg width="20" height="20"><circle cx="10" cy="10" r="8"/></svg></a>
+    <a href="/">Home</a>
+    <button id="menu-btn"><svg width="20" height="20"><rect width="20" height="4"/></svg></button>
+    <button>In winkelwagen</button>
+  </header>
+
+  <h1>Sneakers</h1>
+  <h3>Nieuw binnen</h3>
+  <h2 id="lege-kop"></h2>
+
+  <img id="p1" src="schoen.jpg" width="100" height="100">
+  <img id="deco" src="lijn.png" alt="" width="100" height="10">
+  <img id="aria-verborgen" src="x.png" aria-hidden="true" width="10" height="10">
+  <img id="verdacht" src="IMG_1234.jpg" alt="IMG_1234.jpg" width="100" height="100">
+  <img class="verborgen" src="niet-zichtbaar.jpg">
+
+  <p class="licht" id="lichte-tekst">Was € 89,95</p>
+  <p class="groot">Grote kop in grijs</p>
+  <p class="grens">Precies genoeg contrast</p>
+  <div class="hero"><p id="hero-tekst">Tekst op verloop</p></div>
+  <span class="sr-only">Alleen voor screenreaders</span>
+
+  <form>
+    <input id="zonder-label" type="text">
+    <input id="alleen-placeholder" type="email" placeholder="E-mailadres">
+    <label for="met-label">Postcode</label><input id="met-label" type="text">
+    <input type="hidden" name="token" value="abc">
+    <select id="maat"><option>42</option></select>
+    <input type="submit">
+  </form>
+
+  <iframe src="about:blank" width="200" height="100"></iframe>
+  <a href="/contact" tabindex="3">Contact</a>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sneakers – Voorbeeldwinkel</title>
+  <style>
+    body { font-family: sans-serif; background: #fff; color: #1a1a1a; }
+    .muted { color: #595959; }
+    .knop { background: #0b5; color: #000; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/winkelwagen" aria-label="Winkelwagen, 2 artikelen"><svg aria-hidden="true" width="20" height="20"><circle cx="10" cy="10" r="8"/></svg></a>
+    <a href="/">Home</a>
+    <button type="button"><svg aria-hidden="true" width="20" height="20"><rect width="20" height="4"/></svg><span class="sr-only">Menu openen</span></button>
+  </header>
+  <main>
+    <h1>Sneakers</h1>
+    <h2>Nieuw binnen</h2>
+    <img src="schoen.jpg" alt="Zwarte leren sneaker met witte zool" width="100" height="100">
+    <img src="lijn.png" alt="" width="100" height="10">
+    <p class="muted">Was € 89,95</p>
+    <form>
+      <label for="email">E-mailadres</label>
+      <input id="email" type="email" autocomplete="email" placeholder="naam@voorbeeld.nl">
+      <label for="maat">Maat</label>
+      <select id="maat"><option>42</option></select>
+      <button type="submit" class="knop">In winkelwagen</button>
+    </form>
+    <iframe src="about:blank" title="Maattabel" width="200" height="100"></iframe>
+  </main>
+</body>
+</html>
