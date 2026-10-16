@@ -329,6 +329,23 @@
     return r;
   };
 
+  // Ligt er een afbeelding, video of canvas onder het midden van deze tekst?
+  function overlapsMedia(el, rect) {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    let anc = el.parentElement;
+    for (let depth = 0; anc && depth < 6; depth++, anc = anc.parentElement) {
+      const media = anc.querySelectorAll('img, video, canvas, picture');
+      for (const m of media) {
+        if (m === el || el.contains(m)) continue;
+        const mr = m.getBoundingClientRect();
+        if (mr.width < 20 || mr.height < 20) continue; // iconen tellen niet
+        if (cx >= mr.left && cx <= mr.right && cy >= mr.top && cy <= mr.bottom && isVisible(m)) return true;
+      }
+    }
+    return false;
+  }
+
   rules['color-contrast'] = function () {
     const r = makeResult();
     const seen = new Set();
@@ -377,6 +394,8 @@
         if (bg.a > 0) layers.push(bg);
         if (bg.a >= 1) break;
       }
+      // Tekst over een afbeelding of video (bijv. een banner): de kleur erachter is dan niet betrouwbaar.
+      if (!reason && overlapsMedia(el, rect)) reason = 'tekst op een afbeelding of video';
       if (reason) {
         push(r.incomplete, el, { detail: 'Contrast niet automatisch te bepalen (' + reason + ').' });
         return;

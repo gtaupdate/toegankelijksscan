@@ -50,10 +50,11 @@ function payloadFor(scan, extra = {}) {
     pages: scan.pages.map((p) => ({ url: p.url, title: trim(p.title, 120), error: p.error || null })),
     issues: scan.issues.map((i) => ({
       id: i.id, title: i.title, impact: i.impact, kind: i.kind, count: i.count, reviewCount: i.reviewCount,
+      occurrences: i.occurrences || i.count, pagesAffected: new Set(i.pages).size,
       wcag: i.wcag.id,
       examples: i.examples.slice(0, 5).map((e) => ({
         selector: trim(e.selector, 160), html: trim(e.html, 200), detail: trim(e.detail, 160),
-        page: e.page, fg: e.fg, bg: e.bg, ratio: e.ratio,
+        page: e.page, pageCount: e.pageCount, fg: e.fg, bg: e.bg, ratio: e.ratio,
       })),
     })),
     ...extra,

@@ -34,9 +34,15 @@ function gradeFor(score) {
 
 /*
  * Voegt de ruwe resultaten van alle gescande pagina's samen tot één lijst bevindingen per regel.
+ *
+ * Ontdubbelen: hetzelfde element (zelfde selector en HTML) op meerdere pagina's, zoals een fout in de
+ * header of footer, telt één keer, met het aantal pagina's erbij. Zo telt een sitebrede fout
+ * niet vijf keer mee in de score.
  */
 function aggregate(pages) {
   const byRule = new Map();
+  const seen = new Map(); // ruleId -> Map(key -> example)
+  const keyOf = (ex) => ex.selector + '\u0000' + ex.html;
   for (const page of pages) {
     if (page.error) continue;
     for (const [id, res] of Object.entries(page.results)) {
@@ -54,10 +60,25 @@ function aggregate(pages) {
         });
       }
       const agg = byRule.get(id);
-      agg.count += count;
+      if (!seen.has(id)) seen.set(id, new Map());
+      const known = seen.get(id);
+      let repeats = 0;
+      for (const ex of list) {
+        const k = keyOf(ex);
+        const prev = known.get(k);
+        if (prev) {
+          repeats++;
+          prev.pageCount++;
+        } else {
+          const item = { ...ex, page: page.url, pageCount: 1 };
+          known.set(k, item);
+          if (agg.examples.length < 25) agg.examples.push(item);
+        }
+      }
+      agg.occurrences = (agg.occurrences || 0) + count;
+      agg.count += Math.max(0, count - repeats);
       agg.reviewCount += reviewCount;
       if (count) agg.pages.push(page.url);
-      for (const ex of list) if (agg.examples.length < 25) agg.examples.push({ ...ex, page: page.url });
       if (!isControle) {
         for (const ex of res.incomplete) if (agg.reviewExamples.length < 10) agg.reviewExamples.push({ ...ex, page: page.url });
       }

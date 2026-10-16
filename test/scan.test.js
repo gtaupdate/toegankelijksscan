@@ -130,3 +130,32 @@ test('onbereikbare site: nette foutmelding, geen crash', async () => {
   assert.doesNotMatch(html, /Goed op weg/);
   assert.throws(() => renderStatement(scan, {}), /geen enkele pagina/);
 });
+
+test('contrast: tekst op een afbeelding wordt handmatig, niet als fout gemeld', async () => {
+  const scan = await scanSite(FIX('banner.html'), { maxPages: 1, screenshot: false });
+  const r = scan.pages[0].results['color-contrast'];
+  assert.deepEqual(r.violations.map((v) => v.selector), ['#wit-op-wit']);
+  assert.ok(r.incomplete.some((i) => i.selector === '#op-foto' && /afbeelding/.test(i.detail)));
+});
+
+test('ontdubbelen: dezelfde headerfout op meerdere pagina\'s telt één keer', async () => {
+  const header = '<header><button class="cart"><svg width="20" height="20"></svg></button></header>';
+  const page = (t, extra = '') => '<html lang="nl"><head><title>' + t + '</title></head><body>' + header + '<h1>' + t + '</h1>' + extra + '</body></html>';
+  const pages = {
+    '/': page('Home', '<a href="/product/a">A</a> <a href="/winkelwagen">W</a>'),
+    '/product/a': page('A', '<button></button>'),
+    '/winkelwagen': page('W'),
+  };
+  const server = http.createServer((req, res) => { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(pages[req.url] || page('x')); });
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  try {
+    const scan = await scanSite('http://127.0.0.1:' + server.address().port + '/', { maxPages: 3, screenshot: false });
+    const btn = scan.issues.find((i) => i.id === 'button-name');
+    assert.equal(btn.occurrences, 4, '3× header + 1× productpagina gezien');
+    assert.equal(btn.count, 2, 'unieke fouten: headerknop en de lege knop op de productpagina');
+    const headerEx = btn.examples.find((e) => /cart/.test(e.html));
+    assert.equal(headerEx.pageCount, 3);
+  } finally {
+    server.close();
+  }
+});

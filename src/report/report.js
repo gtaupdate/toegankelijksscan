@@ -34,11 +34,12 @@ function platformTips(meta, platforms) {
 
 function exampleTable(issue) {
   const rows = issue.examples.map((ex) => {
-    let extra = esc(ex.detail || '');
+    let extra = esc(ex.detail || '') + (ex.pageCount > 1 ? '<br><span class="small muted">Op ' + ex.pageCount + ' pagina\'s</span>' : '');
     if (issue.id === 'color-contrast' && ex.fg) {
       extra = '<span class="swatch"><i aria-hidden="true" title="Voorbeeld van de huidige kleuren" style="color:' + safeHex(ex.fg) + ';background:' + safeHex(ex.bg) + '">Aa</i>' +
         '<span class="num">' + esc(ex.ratio) + ':1 (nodig ' + esc(ex.required) + ':1)</span></span>' +
-        '<br><span class="mono">' + esc(ex.fg) + ' op ' + esc(ex.bg) + '</span>';
+        '<br><span class="mono">' + esc(ex.fg) + ' op ' + esc(ex.bg) + '</span>' +
+        (ex.pageCount > 1 ? '<br><span class="small muted">Op ' + ex.pageCount + ' pagina\'s</span>' : '');
     }
     return '<tr><td><code>' + esc(ex.selector) + '</code></td><td><code>' + esc(ex.html) + '</code></td><td>' + extra + '</td></tr>';
   }).join('');
