@@ -41,7 +41,7 @@ jobs:
         env:
           RESULT_WEBHOOK: ${{ secrets.RESULT_WEBHOOK }}
         run: node bin/run-and-notify.js --file sites.txt --pages 5
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: controlescans
