@@ -5,6 +5,7 @@ name: Tests en controlescans
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
   schedule:
@@ -12,6 +13,11 @@ on:
 
 permissions:
   contents: read
+
+# Een nieuwere run voor dezelfde branch of hetzelfde voorstel vervangt de oude (scheelt minuten).
+concurrency:
+  group: controle-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -28,6 +34,8 @@ jobs:
 
   controlescans:
     needs: tests
+    # Updatevoorstellen (pull requests) draaien alleen de tests, niet de scans.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
