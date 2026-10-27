@@ -22,7 +22,7 @@
     var n = $('#kv-c-n'), c = $('#kv-c-c'), w = $('#kv-c-w');
     var update = function () {
       var nv = +n.value, cv = +c.value / 100, wv = +w.value;
-      var jobs = nv * cv, val = jobs * wv, be = wv ? 249 / wv : 0;
+      var jobs = nv * cv, val = jobs * wv, be = wv ? 199 / wv : 0;
       $('[data-o="n"]').textContent = nv;
       $('[data-o="c"]').textContent = Math.round(cv * 100) + '%';
       $('[data-o="w"]').textContent = eur(wv);
