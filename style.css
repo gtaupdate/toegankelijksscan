@@ -3,7 +3,7 @@ Theme Name: KlusVanger
 Theme URI: https://klusvanger.nl
 Author: Salesify
 Description: One-page thema voor KlusVanger: gemiste oproepen worden complete klusaanvragen. Met rekenhulp, voorbeeldgesprek en pilotformulier.
-Version: 1.5.0
+Version: 1.6.0
 Requires at least: 6.0
 Requires PHP: 7.4
 Text Domain: klusvanger
@@ -336,6 +336,21 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .kv-footer .kv-logo { color: inherit; }
 .kv-footer .kv-logo__text small { color: color-mix(in srgb, var(--night-ink) 60%, transparent); }
 
+
+/* vergelijking en tussen-CTA */
+.kv-compare { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.kv-compare table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: .95rem; }
+.kv-compare th, .kv-compare td { padding: .85rem 1rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.kv-compare thead th { font: 700 .9rem/1.2 var(--body); background: var(--sunk); }
+.kv-compare tbody th { font-weight: 600; width: 26%; }
+.kv-compare td { color: var(--muted); }
+.kv-compare .is-us { background: color-mix(in srgb, var(--signal) 16%, var(--surface)); color: var(--ink); font-weight: 600; }
+.kv-compare thead .is-us { background: var(--ink); color: var(--surface); }
+.kv-compare tr:last-child th, .kv-compare tr:last-child td { border-bottom: 0; }
+.kv-ctaband { background: var(--ink); color: var(--surface); }
+.kv-ctaband__in { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding-block: 1.6rem; flex-wrap: wrap; }
+.kv-ctaband b { display: block; font: 800 1.35rem/1.2 var(--display); }
+.kv-ctaband span { opacity: .8; }
 
 /* vakken */
 .kv-vakbar { background: var(--surface); border-block: 1px solid var(--line); }
