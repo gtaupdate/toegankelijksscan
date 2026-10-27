@@ -465,3 +465,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .kv-content ul, .kv-content ol { margin: 0; padding-left: 1.25rem; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* juridische pagina's */
+.kv-legal { max-width: 46rem; }
+.kv-legal h1 { font: 800 clamp(1.8rem, 1.3rem + 2vw, 2.6rem)/1.1 var(--display); margin: .4rem 0 1rem; }
+.kv-legal h2 { font: 700 1.2rem/1.3 var(--body); margin: 2rem 0 .5rem; }
+.kv-legal p, .kv-legal li { color: var(--ink); line-height: 1.65; }
+.kv-legal ul { padding-left: 1.2rem; display: grid; gap: .4rem; }
+.kv-legal__concept { display: inline-block; font: 500 .78rem/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; background: var(--signal); color: var(--signal-ink, #0F211E); padding: .4rem .6rem; border-radius: 6px; }
