@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mijn KlusVanger</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.pt-wrap{max-width:980px;margin:0 auto;padding:2rem 16px 4rem}
+.pt-top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.pt-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.4rem}
+.pt-tabs{display:flex;gap:.4rem;margin:0 0 1rem}
+.pt-tabs button{min-height:40px;padding:0 1rem;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .9rem/1 var(--body);cursor:pointer}
+.pt-tabs button[aria-selected=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pt-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-bottom:1rem}
+.pt-kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem}
+.pt-kpi b{display:block;font:800 1.8rem/1 var(--display)}.pt-kpi span{color:var(--muted);font-size:.85rem}
+.pt-list{display:grid;gap:.6rem}
+.pt-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4rem 1rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem}
+.pt-item h3{margin:0;font:700 1.05rem/1.3 var(--body)}
+.pt-item p{margin:0;color:var(--muted);font-size:.92rem}
+.pt-meta{display:flex;gap:.6rem;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.pt-item select{min-height:40px;border-radius:8px;border:1px solid var(--line);padding:0 .6rem;background:var(--surface);color:var(--ink)}
+.pt-spoed{background:var(--signal);color:var(--signal-ink,#0F211E);font:700 .72rem/1 var(--body);padding:.3rem .5rem;border-radius:6px;text-transform:uppercase}
+.pt-form{display:grid;gap:1rem;max-width:560px}
+.pt-form label{display:grid;gap:.35rem;font-weight:600;font-size:.95rem}
+.pt-form input,.pt-form textarea{min-height:44px;border:1px solid var(--line);border-radius:8px;padding:.6rem .8rem;font:400 1rem/1.4 var(--body);background:var(--surface);color:var(--ink)}
+.pt-msg{padding:.8rem 1rem;border-radius:8px;background:var(--sunk);margin-top:.8rem}
+.pt-empty{text-align:center;color:var(--muted);padding:2rem}
+@media(max-width:600px){.pt-kpis{grid-template-columns:1fr 1fr 1fr}.pt-kpi b{font-size:1.4rem}.pt-item{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="pt-wrap">
+  <div class="pt-top">
+    <a class="kv-logo" href="/" style="text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:.6rem"><svg viewBox="0 0 32 32" width="36" height="36" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0E4A43"/><path d="M9 7h4v7.5L19.5 7H24l-7 7.6L24.5 25H20l-5.3-7.6L13 19.2V25H9z" fill="#F3B80C"/></svg><b style="font:800 1.2rem/1 var(--display)">Mijn KlusVanger</b></a>
+    <button class="kv-btn kv-btn--ghost" id="uit" hidden>Uitloggen</button>
+  </div>
+
+  <section id="login" class="pt-card" hidden>
+    <h1 style="margin:0 0 .5rem;font:800 1.6rem/1.2 var(--display)">Inloggen</h1>
+    <p style="color:var(--muted);margin:0 0 1rem">Vul je e-mailadres in. Je krijgt een link waarmee je direct bent ingelogd. Geen wachtwoord nodig.</p>
+    <form class="pt-form" id="loginform"><label>E-mailadres<input type="email" name="email" required autocomplete="email"></label><button class="kv-btn kv-btn--primary" type="submit">Stuur mij een inloglink</button></form>
+    <div class="pt-msg" id="loginmsg" hidden></div>
+  </section>
+
+  <section id="app" hidden>
+    <p id="bedrijf" style="margin:0 0 1rem;font:800 1.4rem/1.2 var(--display)"></p>
+    <div class="pt-tabs" role="tablist"><button role="tab" aria-selected="true" data-tab="aanvragen">Klusaanvragen</button><button role="tab" aria-selected="false" data-tab="instellingen">Instellingen</button></div>
+    <div id="tab-aanvragen">
+      <div class="pt-kpis"><div class="pt-kpi"><b id="k-maand">0</b><span>aanvragen deze maand</span></div><div class="pt-kpi"><b id="k-spoed">0</b><span>met spoed</span></div><div class="pt-kpi"><b id="k-open">0</b><span>nog terugbellen</span></div></div>
+      <div class="pt-list" id="lijst"></div>
+    </div>
+    <div id="tab-instellingen" hidden>
+      <form class="pt-form pt-card" id="inst">
+        <label>Klusaanvragen mailen naar<input type="email" name="melding_email" required></label>
+        <label>Spoed-sms naar (mobiel nummer)<input type="tel" name="spoed_sms"></label>
+        <label>Werkgebied<input name="werkgebied" placeholder="bijv. Utrecht en 20 km rondom"></label>
+        <label>Wat moet de assistent nog weten?<textarea name="extra_info" rows="4" placeholder="bijv. we doen geen zonnepanelen, in het weekend alleen spoed"></textarea></label>
+        <button class="kv-btn kv-btn--primary" type="submit">Opslaan</button>
+        <div class="pt-msg" id="instmsg" hidden></div>
+      </form>
+    </div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  var sb = supabase.createClient('https://mssqeqqycmrrxeswcjmb.supabase.co', 'sb_publishable_UT5K_UNW4lA89qam1p-qUQ_AxI8MSvb');
+  var $ = function(s){ return document.querySelector(s); };
+  var org = null;
+  var STATUS = { nieuw: 'Nieuw', teruggebeld: 'Teruggebeld', offerte: 'Offerte gestuurd', opdracht: 'Opdracht!', verloren: 'Niet doorgegaan' };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function msg(el, t){ el.textContent = t; el.hidden = !t; }
+
+  async function show(){
+    var s = (await sb.auth.getSession()).data.session;
+    $('#login').hidden = !!s; $('#app').hidden = !s; $('#uit').hidden = !s;
+    if (!s) return;
+    var m = await sb.from('memberships').select('org_id, organizations(id,naam,melding_email,spoed_sms,werkgebied,extra_info)').limit(1);
+    if (m.error || !m.data.length) { $('#bedrijf').textContent = 'Er is nog geen bedrijf aan dit account gekoppeld.'; return; }
+    org = m.data[0].organizations; $('#bedrijf').textContent = org.naam;
+    var f = $('#inst'); ['melding_email','spoed_sms','werkgebied','extra_info'].forEach(function(k){ f[k].value = org[k] || ''; });
+    laad();
+  }
+  async function laad(){
+    var r = await sb.from('aanvragen').select('id,klus,omschrijving,plaats,naam,terugbelnummer,spoed,letop,status,created_at').eq('org_id', org.id).order('created_at', { ascending: false }).limit(200);
+    var L = r.data || [], m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+    var maand = L.filter(function(a){ return new Date(a.created_at) >= m0; });
+    $('#k-maand').textContent = maand.length; $('#k-spoed').textContent = maand.filter(function(a){ return a.spoed; }).length; $('#k-open').textContent = L.filter(function(a){ return a.status === 'nieuw'; }).length;
+    $('#lijst').innerHTML = L.length ? L.map(function(a){
+      var t = new Date(a.created_at).toLocaleString('nl-NL', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      var tel = a.terugbelnummer ? '<a href="tel:' + esc(a.terugbelnummer.replace(/\s/g,'')) + '">' + esc(a.terugbelnummer) + '</a>' : 'nummer van de oproep';
+      return '<article class="pt-item"><div><h3>' + (a.spoed ? '<span class="pt-spoed">Spoed</span> ' : '') + esc(a.klus || 'Klusaanvraag') + (a.plaats ? ' · ' + esc(a.plaats) : '') + '</h3><p>' + esc(a.omschrijving) + '</p><div class="pt-meta"><span>' + esc(a.naam || 'onbekend') + '</span><span>' + tel + '</span><span>' + t + '</span></div>' + ((a.letop||[]).length ? '<p style="margin-top:.4rem"><b>Let op:</b> ' + a.letop.map(esc).join(' · ') + '</p>' : '') + '</div>' +
+        '<select data-id="' + a.id + '" aria-label="Status">' + Object.keys(STATUS).map(function(k){ return '<option value="' + k + '"' + (k === a.status ? ' selected' : '') + '>' + STATUS[k] + '</option>'; }).join('') + '</select></article>';
+    }).join('') : '<p class="pt-empty">Nog geen klusaanvragen. Zodra iemand belt en jij niet opneemt, verschijnt de aanvraag hier.</p>';
+  }
+  $('#lijst').addEventListener('change', async function(e){
+    if (!e.target.matches('select')) return;
+    var r = await sb.from('aanvragen').update({ status: e.target.value }).eq('id', e.target.getAttribute('data-id'));
+    if (r.error) alertMsg('Opslaan lukte niet.'); else laad();
+  });
+  function alertMsg(t){ msg($('#instmsg'), t); }
+  $('#loginform').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var r = await sb.auth.signInWithOtp({ email: e.target.email.value.trim(), options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: false } });
+    msg($('#loginmsg'), r.error ? 'Dit e-mailadres is niet bij ons bekend, of er ging iets mis. Probeer het later opnieuw.' : 'Kijk in je mail: we hebben je een inloglink gestuurd.');
+  });
+  $('#inst').addEventListener('submit', async function(e){
+    e.preventDefault(); var f = e.target;
+    var r = await sb.rpc('portaal_instellingen', { p_org: org.id, p: { melding_email: f.melding_email.value, spoed_sms: f.spoed_sms.value, werkgebied: f.werkgebied.value, extra_info: f.extra_info.value } });
+    msg($('#instmsg'), r.error ? 'Opslaan lukte niet: ' + r.error.message : 'Opgeslagen. Je assistent is binnen een minuut bijgewerkt.');
+  });
+  document.querySelectorAll('[data-tab]').forEach(function(b){ b.addEventListener('click', function(){
+    document.querySelectorAll('[data-tab]').forEach(function(x){ x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+    $('#tab-aanvragen').hidden = b.dataset.tab !== 'aanvragen'; $('#tab-instellingen').hidden = b.dataset.tab !== 'instellingen';
+  }); });
+  $('#uit').addEventListener('click', async function(){ await sb.auth.signOut(); show(); });
+  sb.auth.onAuthStateChange(function(){ show(); });
+  show();
+})();
+</script>
+</body>
+</html>
