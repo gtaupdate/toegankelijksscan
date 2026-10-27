@@ -3,7 +3,7 @@
   "landingPage": "/",
   "preferredVersions": { "php": "8.2", "wp": "latest" },
   "features": { "networking": true },
-  "login": true,
+  "login": false,
   "steps": [
     { "step": "installTheme", "themeData": { "resource": "url", "url": "https://raw.githubusercontent.com/gtaupdate/toegankelijksscan/klusvanger-theme/klusvanger.zip" }, "options": { "activate": true } },
     { "step": "setSiteOptions", "options": { "blogname": "KlusVanger", "blogdescription": "Mis geen klus meer" } },
